@@ -14,7 +14,7 @@ export const toggles = {
 
 export const business = {
   name: "Your Pizzeria Name",
-  phone: "(555) 123-4567",
+  phone: "(631) 223-8108",
   email: "hello@yourpizzeria.com",
   address: "123 Main Street, Huntington, NY 11743",
   hours: [
@@ -62,14 +62,31 @@ export const menu = {
       photo: "",
       items: [
         { name: "Spaghetti", description: "San Marzano tomatoes, fresh mozz, basil", price: 18, },
-        { name: "Penne alla Vodka", description: "yum", price: 18, spicy: 1 },
+        { name: "Penne alla Vodka", description: "Yum", price: 18, spicy: 1 },
         { name: "Rigatoni Bolognese", description: "Cremini, fontina, white truffle oil", price: 20, }, // 'vegetarian' optional; won’t render unless you add a badge for it
       ],
     },
-    { title: "Entrées", items: ["Margherita", "Pepperoni", "Sausage & Peppers"], photo : "/images/tomatox1200.jpg", }, // photo: "/images/menu/pizzas.jpg",
+    {
+      title: "Entrées",
+      photo: "/images/tomatox1200.jpg",
+      items: [
+        { name: "Chicken Parmesan", description: "San Marzano tomatoes, fresh mozz, basil", price: 22, },
+        { name: "Chicken Milanese", description: "Yum", price: 23,  },
+      ],
+    },
+    // { title: "Entrées", items: ["Margherita", "Pepperoni", "Sausage & Peppers"], photo : "/images/tomatox1200.jpg", }, // photo: "/images/menu/pizzas.jpg",
+    
+    {
+      title: "Salads & Sides",
+      photo: "",
+      items: [
+        { name: "Ceasar Salad", description: "Romaine lettuce and croutons dressed with lemon juice, olive oil, eggs, anchovies, garlic, Dijon mustard, Parmesan and black pepper.", price: 21, },
+        { name: "House Salad", description: "Yum", price: 23,  },
+      ],
+    },
     { title: "Specialty Pies", items: ["Truffle Mushroom", "White Pie", "Hot Honey Pepperoni"] },
     { title: "Build Your Own", items: ["Choose crust, sauce, cheese, toppings"] },
-    { title: "Salads & Sides", items: ["Caesar", "House", "Garlic Knots"] },
+    // { title: "Salads & Sides", items: ["Caesar", "House", "Garlic Knots"] },
     { title: "Drinks", items: ["Fountain", "Bottled", "Local Beer (dine-in)", "House Wine (dine-in)"] },
   ],
 };

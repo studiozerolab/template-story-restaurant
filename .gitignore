@@ -1,24 +1,60 @@
-# build output
-dist/
-# generated types
-.astro/
+# ------------------------------------------------------------
+# Studio Zero Template - .gitignore
+# For Astro + Tailwind + Vite projects
+# ------------------------------------------------------------
 
-# dependencies
+# Node dependencies
 node_modules/
-
-# logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# Build output
+dist/
+.astro/
+.vite/
+.cache/
+.netlify/
+.vercel/
 
-# environment variables
+# Environment files
 .env
-.env.production
+.env.*
+!.env.example
 
-# macOS-specific files
-.DS_Store
+# Logs
+logs/
+*.log
+*.tmp
+*.pid
+*.pid.lock
 
-# jetbrains setting folder
+# Editor & system files
+.vscode/
 .idea/
+.DS_Store
+Thumbs.db
+
+# OS / temporary
+tmp/
+*.local.*
+*.swp
+
+# TypeScript
+*.tsbuildinfo
+
+# Misc
+coverage/
+*.zip
+*.tar
+*.gz
+
+# Optional deployment config (ignore if generated automatically)
+netlify.toml
+vercel.json
+
+# Local test data or scratch files
+__tests__/
+sandbox/
+drafts/
