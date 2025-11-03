@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+/* Theme tokens (unchanged; easy to brand per client) */
+:root {
+  --color-surface: #ffffff;
+  --color-alt: #faf8f6;
+
+  --color-primary: #9b1b30;    /* tomato red */
+  --color-accent: #006e4f;     /* basil green */
+  --color-secondary: #f2d16b;  /* warm wheat */
+
+  --color-mid: #e5e7eb;
+  --color-strong: #d1d5db;
+
+  --color-primary-tint: #fdeef1;
+  --color-accent-tint: #e9f5f1;
+
+  --max-wrap: 1180px;
+}
+
+/* Base */
+html { scroll-behavior: smooth; }
+body {
+  background: var(--color-surface);
+  color: #1f2937; /* gray-800 */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+h1,h2,h3,h4 { letter-spacing: -0.01em; }
+
+/* Layout helpers */
+.wrap { max-width: var(--max-wrap); margin-left:auto; margin-right:auto; width:100%; padding-left:1.25rem; padding-right:1.25rem; }
+.section-gap { padding-top: 4rem; padding-bottom: 4rem; }
+@media (min-width: 768px){ .section-gap { padding-top: 6rem; padding-bottom: 6rem; } }
+
+/* Buttons */
+.btn { display:inline-flex; align-items:center; justify-content:center; border-radius:.5rem; padding:.5rem 1rem; font-weight:600; transition:opacity .15s ease, background-color .15s ease, color .15s ease, border-color .15s ease; }
+.btn-primary { background: var(--color-primary); color: #fff; box-shadow: 0 6px 18px rgba(0,0,0,.06); }
+.btn-primary:hover { opacity:.9; }
+.btn-ghost { border:1px solid currentColor; color:#1f2937; }
+.btn-ghost:hover { background:#f9fafb; }
+/* Story-like outline/soft buttons */
+.btn-outline { border:1px solid rgba(31,41,55,.2); color:#1f2937; background:transparent; border-radius:9999px; padding:.55rem 1rem; }
+.btn-outline:hover { background:#f9fafb; }
+.btn-soft { background:#fff; color:#1f2937; border:1px solid rgba(31,41,55,.08); border-radius:9999px; padding:.55rem 1rem; }
+.btn-soft:hover { background:#f9fafb; }
+
+/* Background helpers (neutral rhythm like Story) */
+.bg-surface { background: var(--color-surface); }
+.bg-alt { background: var(--color-alt); }
+.bg-primaryTint { background: var(--color-primary-tint); }
+.bg-accentTint { background: var(--color-accent-tint); }
+
+/* Aspect helpers */
+.aspect-4\/3 { aspect-ratio: 4/3; }
+.aspect-16\/9 { aspect-ratio: 16/9; }
+.aspect-square { aspect-ratio: 1/1; }
+
+/* Hero */
+.hero-full { min-height: 100svh; }
+
+/* Gallery Lightbox (from earlier) */
+.lightbox-overlay { position:fixed; inset:0; z-index:50; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.8); }
+.lightbox-overlay.active { display:flex; }
+.lightbox-image { max-height:90vh; max-width:90vw; border-radius:.75rem; box-shadow: 0 25px 50px rgba(0,0,0,.25); }
+.lightbox-caption { margin-top:.75rem; text-align:center; font-size:.875rem; color:#f3f4f6; }
+
+/* Gallery hover (Story-ish subtle zoom) */
+.gallery-img { overflow:hidden; border-radius:.75rem; }
+.gallery-img img { transition: transform .4s ease; display:block; width:100%; height:100%; object-fit:cover; }
+.gallery-img:hover img { transform: scale(1.02); }

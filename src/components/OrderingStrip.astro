@@ -1,0 +1,51 @@
+---
+/**
+ * Props:
+ * - links: Array<{ label: string; url: string; logo?: string }>
+ */
+const { links = [], phone } = Astro.props;
+---
+<div
+  id="ordering"
+  class="scroll-mt-16 bg-[var(--color-accent-tint)] py-4 border-y border-[var(--color-accent)]/20"
+>
+  <div
+    class="wrap flex flex-wrap items-center gap-3 justify-center md:justify-between"
+  >
+    <span class="font-semibold text-[var(--color-accent)] tracking-wide">
+      Order for Pick-Up or Delivery:
+    </span>
+
+    <div class="flex flex-wrap gap-4 items-center">
+      {links.map((l) => (
+        <a
+          href={l.url}
+          style={`--brand:${l.color || "var(--color-accent)"};`}
+          // class="flex items-center gap-2 border border-transparent text-sm text-[var(--color-accent)] hover:bg-[var(--color-accent)] hover:text-white transition px-3 py-1.5 rounded-md"
+          class="flex items-center gap-2 text-[color:var(--brand)]
+                 hover:bg-[color:var(--brand)] hover:text-white
+                 border border-transparent transition px-3 py-1.5 rounded-md text-sm"
+        >
+          {l.logo ? (
+            <img
+              src={l.logo}
+              alt={`${l.label} logo`}
+              class="h-4 w-auto object-contain"
+              loading="lazy"
+            />
+          ) : null}
+          <span>{l.label}</span>
+        </a>
+      ))}
+      {phone && (
+        <a href={`tel:${phone.replace(/[^0-9]/g, "")}`}
+          class="flex items-center gap-1.5 text-[var(--color-accent)] font-semibold hover:underline text-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4">
+            <path d="M2.003 5.884a1 1 0 0 1 1.3-.954l3.995 1.15a1 1 0 0 1 .681.817l.549 3.994a1 1 0 0 1-.29.828l-1.82 1.82a14.978 14.978 0 0 0 6.366 6.366l1.82-1.82a1 1 0 0 1 .828-.29l3.994.549a1 1 0 0 1 .817.681l1.15 3.995a1 1 0 0 1-.954 1.3A18 18 0 0 1 2.003 5.884Z"/>
+          </svg>
+          <span>{phone}</span>
+        </a>
+      )}
+    </div>
+  </div>
+</div>

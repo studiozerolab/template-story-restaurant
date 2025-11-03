@@ -1,0 +1,16 @@
+---
+import { highlights } from "../config/site";
+---
+<section id="highlights" class="bg-[var(--color-surface)] section-gap">
+  <div class="wrap text-center">
+    <h2 class="text-3xl font-bold text-[var(--color-primary)]">What Makes Us Different</h2>
+    <div class="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      {highlights.map((h) => (
+        <div class="card p-6 text-left hover:shadow-md transition-shadow">
+          <h3 class="font-semibold text-lg text-[var(--color-primary)]">{h.title}</h3>
+          <p class="mt-2 text-gray-700">{h.text}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

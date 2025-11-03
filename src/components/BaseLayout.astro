@@ -1,0 +1,25 @@
+---
+import "../styles/global.css";
+const { title = "Pizzeria", description = "Hand-tossed pies, fresh daily." } = Astro.props;
+---
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <!-- Fonts: load in head for best perf & to avoid PostCSS @import warnings -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-[var(--color-surface)] text-gray-800 antialiased">
+    <slot name="header" />
+    <main><slot /></main>
+    <slot name="footer" />
+  </body>
+</html>

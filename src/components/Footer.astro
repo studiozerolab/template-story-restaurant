@@ -1,0 +1,15 @@
+---
+import { business } from "../config/site";
+const year = new Date().getFullYear();
+---
+<footer class="bg-surface border-t border-[var(--color-mid)]">
+  <div class="wrap py-10 text-center text-sm text-gray-600">
+    <p>© {year} {business.name}. All rights reserved.</p>
+    <p class="mt-2">
+      Made by
+      <a href="https://studiozerolab.com" target="_blank" rel="noopener" class="font-medium text-[var(--color-primary)] hover:underline">
+        STUDIØ
+      </a>
+    </p>
+  </div>
+</footer>

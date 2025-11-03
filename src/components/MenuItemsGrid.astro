@@ -1,0 +1,179 @@
+---
+/**
+ * Story “Items” → Takeout menu cards with dietary badges
+ *
+ * Props:
+ * - title?: string
+ * - id?: string
+ * - columns?: 2 | 3
+ * - currency?: string ("USD" by default)
+ * - showLegend?: boolean (default true)
+ * - categories: Array<{
+ *     title: string
+ *     photo?: string
+ *     items: Array<{
+ *       name: string
+ *       description?: string
+ *       price?: string | number
+ *       glutenFree?: boolean
+ *       vegan?: boolean
+ *       vegetarian?: boolean
+ *       spicy?: boolean | number
+ *     }>
+ *   }>
+ */
+
+const {
+  title = "Menu Highlights",
+  id = "menu",
+  columns = 3,
+  currency = "USD",
+  showLegend = true,
+  categories = [],
+} = Astro.props;
+
+const gridCols = columns === 2 ? "sm:grid-cols-2" : "sm:grid-cols-2 lg:grid-cols-3";
+
+/** Format price consistently */
+function fmtPrice(p: unknown) {
+  if (typeof p === "number") {
+    try {
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency,
+        maximumFractionDigits: 2,
+      }).format(p);
+    } catch {
+      return `$${p.toFixed ? p.toFixed(2) : p}`;
+    }
+  }
+  if (typeof p === "string") {
+    const trimmed = p.trim();
+    if (trimmed.startsWith("$")) return trimmed;
+    const num = Number(trimmed);
+    return Number.isFinite(num) ? fmtPrice(num) : trimmed;
+  }
+  return "";
+}
+
+/** Render dietary badges */
+function badges(it: any) {
+  const out: Array<{ label: string; class: string }> = [];
+  if (it.glutenFree)
+    out.push({ label: "GF", class: "bg-emerald-50 text-emerald-700 border-emerald-200" });
+  if (it.vegan)
+    out.push({ label: "V", class: "bg-green-50 text-green-700 border-green-200" });
+  if (it.vegetarian)
+    out.push({ label: "VG", class: "bg-amber-50 text-amber-700 border-amber-200" });
+  if (it.spicy) {
+    const n = typeof it.spicy === "number" ? Math.max(1, Math.min(3, it.spicy)) : 1;
+    out.push({
+      label: "🌶".repeat(n),
+      class: "bg-red-50 text-red-700 border-red-200",
+    });
+  }
+  return out;
+}
+
+/** Detect used badges for legend */
+const uses = categories.reduce(
+  (acc, c) => {
+    (c.items || []).forEach((it: any) => {
+      if (it.glutenFree) acc.gf = true;
+      if (it.vegan) acc.v = true;
+      if (it.vegetarian) acc.vg = true;
+      if (it.spicy) acc.spicy = true;
+    });
+    return acc;
+  },
+  { gf: false, v: false, vg: false, spicy: false }
+);
+---
+<section id={id} class="bg-surface section-gap">
+  <div class="wrap">
+    <div class="text-center">
+      <h2 class="text-3xl md:text-4xl font-semibold text-gray-900">{title}</h2>
+      <p class="mt-2 text-gray-600">Quick picks, perfect for takeout.</p>
+    </div>
+
+    <div class={`mt-10 grid gap-6 ${gridCols}`}>
+      {categories.map((cat) => (
+        <article class="rounded-xl border border-[var(--color-mid)]/60 bg-white shadow-[0_6px_18px_rgba(0,0,0,0.06)] overflow-hidden">
+          {cat.photo ? (
+            <div class="h-44 md:h-48">
+              <img src={cat.photo} alt={`${cat.title} photo`} class="w-full h-full object-cover" loading="lazy" />
+            </div>
+          ) : (
+            <div class="h-20 bg-[var(--color-alt)]" />
+          )}
+
+          <div class="p-6">
+            <h3 class="text-xl font-semibold text-gray-900">{cat.title}</h3>
+
+            {Array.isArray(cat.items) && cat.items.length ? (
+              <ul class="mt-4 space-y-4">
+                {cat.items.map((it) => (
+                  <li class="border-b last:border-0 border-[var(--color-mid)]/50 pb-4 last:pb-0">
+                    <div class="flex items-start gap-3">
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-baseline justify-between gap-4">
+                          <span class="font-semibold text-gray-900 truncate">{it.name}</span>
+                          {it.price ? (
+                            <span class="shrink-0 text-gray-900 font-semibold">{fmtPrice(it.price)}</span>
+                          ) : null}
+                        </div>
+                        {it.description ? (
+                          <p class="mt-1 text-sm text-gray-600">{it.description}</p>
+                        ) : null}
+                        {badges(it).length ? (
+                          <div class="mt-2 flex flex-wrap gap-2">
+                            {badges(it).map((b) => (
+                              <span class={`inline-flex items-center rounded-full border px-2 py-[2px] text-xs font-medium ${b.class}`}>
+                                {b.label}
+                              </span>
+                            ))}
+                          </div>
+                        ) : null}
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p class="mt-3 text-gray-500">More coming soon.</p>
+            )}
+          </div>
+        </article>
+      ))}
+    </div>
+
+    {showLegend && (uses.gf || uses.v || uses.vg || uses.spicy) ? (
+      <div class="mt-8 text-xs text-gray-600 flex flex-wrap items-center gap-3 justify-center">
+        {uses.gf ? (
+          <span class="inline-flex items-center gap-1">
+            <span class="rounded-full border border-emerald-200 bg-emerald-50 text-emerald-700 px-1.5 py-[1px] font-semibold">GF</span>
+            Gluten-Free
+          </span>
+        ) : null}
+        {uses.v ? (
+          <span class="inline-flex items-center gap-1">
+            <span class="rounded-full border border-green-200 bg-green-50 text-green-700 px-1.5 py-[1px] font-semibold">V</span>
+            Vegan
+          </span>
+        ) : null}
+        {uses.vg ? (
+          <span class="inline-flex items-center gap-1">
+            <span class="rounded-full border border-amber-200 bg-amber-50 text-amber-700 px-1.5 py-[1px] font-semibold">VG</span>
+            Vegetarian
+          </span>
+        ) : null}
+        {uses.spicy ? (
+          <span class="inline-flex items-center gap-1">
+            <span class="rounded-full border border-red-200 bg-red-50 text-red-700 px-1.5 py-[1px] font-semibold">🌶</span>
+            Spicy
+          </span>
+        ) : null}
+      </div>
+    ) : null}
+  </div>
+</section>

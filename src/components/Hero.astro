@@ -1,0 +1,36 @@
+---
+import { assets, business } from "../config/site";
+---
+<section class="hero-full bg-alt flex items-center">
+  <div class="wrap grid gap-10 md:grid-cols-2 items-center w-full">
+    <!-- Text column -->
+    <div class="max-w-prose">
+      <h1 class="text-5xl md:text-7xl font-bold leading-[1.05] text-gray-900">
+        Wood-Fired Flavor,<br />Hometown Heart
+      </h1>
+      <p class="mt-4 text-lg text-gray-600">
+        Welcome to <strong>{business.name}</strong>, a neighborhood spot for crisp-edged crusts,
+        bright sauces, and generous toppings. Dine in, take out, or order delivery—your next favorite
+        slice is a click away.
+      </p>
+      <div class="mt-6 flex gap-3">
+        <a href="#menu" class="btn-outline">View Menu</a>
+        <a href="#ordering" class="btn-soft">Order Online</a>
+      </div>
+    </div>
+
+    <!-- Image column -->
+    <div class="h-[50vh] md:h-[75vh]">
+      {assets.heroImage ? (
+        <img
+          src={assets.heroImage}
+          alt={`${business.name} pizza`}
+          class="w-full h-full object-cover rounded-xl"
+          loading="lazy"
+        />
+      ) : (
+        <div class="w-full h-full bg-white rounded-xl border border-[var(--color-strong)]/50"></div>
+      )}
+    </div>
+  </div>
+</section>

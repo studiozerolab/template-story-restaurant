@@ -1,0 +1,20 @@
+---
+---
+<section id="contact" class="bg-[var(--color-alt)] section-gap">
+  <div class="wrap text-center">
+    <h2 class="text-3xl font-bold text-[var(--color-primary)]">Get in Touch</h2>
+    <form
+      name="contact"
+      method="POST"
+      data-netlify="true"
+      class="mt-8 grid gap-4 max-w-lg mx-auto text-left"
+    >
+      <input type="hidden" name="form-name" value="contact" />
+      <input class="border rounded-md p-3" name="name" placeholder="Name" required />
+      <input class="border rounded-md p-3" name="email" type="email" placeholder="Email" required />
+      <input class="border rounded-md p-3" name="phone" placeholder="Phone (optional)" />
+      <textarea class="border rounded-md p-3" name="message" rows="4" placeholder="Message"></textarea>
+      <button class="btn-primary w-full">Send Message</button>
+    </form>
+  </div>
+</section>

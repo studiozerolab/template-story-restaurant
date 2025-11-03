@@ -1,0 +1,46 @@
+---
+/**
+ * Props:
+ * - id?: string
+ * - heading: string
+ * - copy: string
+ * - image?: string
+ * - reverse?: boolean  (alternates left/right)
+ * - bg?: "surface" | "alt"
+ */
+const { id, heading, hours = [], address, phone, copy, image, reverse = false, bg = "surface" } = Astro.props;
+
+const bgClass = bg === "alt" ? "bg-alt" : "bg-surface";
+const reverseCls = reverse ? "md:[&>div:first-child]:order-2" : "";
+---
+<section id={id} class={`${bgClass} section-gap`}>
+  <div class={`wrap grid gap-10 md:grid-cols-2 items-center ${reverseCls}`}>
+    <div class="max-w-prose">
+      <h2 class="text-3xl md:text-4xl font-semibold text-gray-900">{heading}</h2>
+
+      {hours.length ? (
+        <ul class="mt-4 space-y-1 text-gray-600">
+          {hours.map((h) => (
+            <li><strong>{h.days}</strong> {h.open} - {h.close}</li>
+          ))}
+
+        </ul>
+      ) : null}
+
+      {address && <p class="mt-3 text-gray-600">{address}</p>}
+
+      {phone && (<p class="mt-4 text-gray-600"><strong>{phone}</strong></p>)}
+      
+      <p class="mt-4 text-gray-600 leading-relaxed">{copy}</p>
+
+    </div>
+
+    {image ? (
+      <div class="h-[28rem]">
+        <img src={image} alt="" class="w-full h-full object-cover rounded-xl" loading="lazy" />
+      </div>
+    ) : (
+      <div class="h-[20rem] bg-alt rounded-xl"></div>
+    )}
+  </div>
+</section>
