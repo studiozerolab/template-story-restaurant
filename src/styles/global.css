@@ -44,6 +44,29 @@ h1,h2,h3,h4 { letter-spacing: -0.01em; }
 .btn-outline:hover { background:#f9fafb; }
 .btn-soft { background:#fff; color:#1f2937; border:1px solid rgba(31,41,55,.08); border-radius:9999px; padding:.55rem 1rem; }
 .btn-soft:hover { background:#f9fafb; }
+.btn-accent {
+  background: var(--color-accent);
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(0,0,0,.06);
+}
+.btn-accent:hover { background: var(--color-accent); opacity: .7; }
+.btn-accent-soft {
+  background: var(--color-accent-tint);
+  color: var(--color-secondary);
+  border: 1px solid color-mix(in srgb, var(--color-secondary) 20%, transparent);
+  border-radius: 9999px;
+  padding: .55rem 1rem;
+}
+.btn-accent-soft:hover {
+  background: var(--color-secondary);
+  color: #fff;
+}
+.btn-social { line-height: 0;};
+.btn-social svg {
+  display: block;
+  width: 1.5rem;
+  height: 1.5rem;
+}
 
 /* Background helpers (neutral rhythm like Story) */
 .bg-surface { background: var(--color-surface); }

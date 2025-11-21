@@ -4,6 +4,7 @@
  * - links: Array<{ label: string; url: string; logo?: string }>
  */
 const { links = [], phone } = Astro.props;
+import { Image } from "astro:assets";
 ---
 <div
   id="ordering"
@@ -21,23 +22,39 @@ const { links = [], phone } = Astro.props;
         <a
           href={l.url}
           style={`--brand:${l.color || "var(--color-accent)"};`}
-          // class="flex items-center gap-2 border border-transparent text-sm text-[var(--color-accent)] hover:bg-[var(--color-accent)] hover:text-white transition px-3 py-1.5 rounded-md"
           class="flex items-center gap-2 text-[color:var(--brand)]
-                 hover:bg-[color:var(--brand)] hover:text-white
-                 border border-transparent transition px-3 py-1.5 rounded-md text-sm"
+           hover:bg-[color:var(--brand)] hover:text-white
+           border border-transparent transition px-3 py-1.5 rounded-md text-sm"
+          //class="order-link"
+          aria-label={l.label}
         >
-          {l.logo ? (
-            <img
-              src={l.logo}
-              alt={`${l.label} logo`}
-              class="h-4 w-auto object-contain"
-              loading="lazy"
-            />
-          ) : null}
-          <span>{l.label}</span>
-        </a>
-      ))}
-      {phone && (
+        {/* Inline SVG (preferred) */}
+        {l.svg ? (
+          <span
+            class="inline-block w-5 h-5 leading-none"
+            //class="ol-icon"
+            set:html={l.svg}    
+          />  /* l.svg must be a full <svg ...>...</svg> string using fill='currentColor' */
+        ) : l.logo ? (
+        /* Fallback image */
+        // <span class="ol-icon">
+          <Image
+            src={l.logo}
+            alt={`${l.label} logo`}
+            class="h-4 w-auto object-contain"
+            loading="lazy"
+            decoding="async"
+            widths={[64, 128, 256]}
+            sizes="32px"
+          />
+          //</span>
+      ) : null }
+
+    <span>{l.label}</span>
+  </a>
+))}
+
+      <!-- {phone && (
         <a href={`tel:${phone.replace(/[^0-9]/g, "")}`}
           class="flex items-center gap-1.5 text-[var(--color-accent)] font-semibold hover:underline text-sm">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4">
@@ -45,7 +62,7 @@ const { links = [], phone } = Astro.props;
           </svg>
           <span>{phone}</span>
         </a>
-      )}
+      )} -->
     </div>
   </div>
 </div>

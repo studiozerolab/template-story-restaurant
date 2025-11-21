@@ -1,26 +1,20 @@
 ---
 /**
- * Story “Items” → Takeout menu cards with dietary badges
+ * Menu cards with dietary badges + fixed CTAs at top and bottom.
  *
  * Props:
  * - title?: string
  * - id?: string
  * - columns?: 2 | 3
- * - currency?: string ("USD" by default)
+ * - currency?: string ("USD")
  * - showLegend?: boolean (default true)
- * - categories: Array<{
- *     title: string
- *     photo?: string
- *     items: Array<{
- *       name: string
- *       description?: string
- *       price?: string | number
- *       glutenFree?: boolean
- *       vegan?: boolean
- *       vegetarian?: boolean
- *       spicy?: boolean | number
- *     }>
- *   }>
+ * - fullMenuUrl: string                  // required
+ * - fullMenuLabel?: string               // default "View Full Menu"
+ * - categories: Array<{ title: string; photo?: string; items: Array<{
+ *     name: string; description?: string; price?: string | number;
+ *     glutenFree?: boolean; vegan?: boolean; vegetarian?: boolean;
+ *     spicy?: boolean | number;
+ *   }> }>
  */
 
 const {
@@ -29,53 +23,41 @@ const {
   columns = 3,
   currency = "USD",
   showLegend = true,
+  fullMenuUrl ="/menu",
+  fullMenuLabel = "View Full Menu",
   categories = [],
 } = Astro.props;
+import { Image } from "astro:assets";
 
 const gridCols = columns === 2 ? "sm:grid-cols-2" : "sm:grid-cols-2 lg:grid-cols-3";
 
-/** Format price consistently */
 function fmtPrice(p: unknown) {
   if (typeof p === "number") {
     try {
-      return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency,
-        maximumFractionDigits: 2,
-      }).format(p);
-    } catch {
-      return `$${p.toFixed ? p.toFixed(2) : p}`;
-    }
+      return new Intl.NumberFormat("en-US", { style: "currency", currency, maximumFractionDigits: 2 }).format(p);
+    } catch { return `$${p.toFixed ? p.toFixed(2) : p}`; }
   }
   if (typeof p === "string") {
-    const trimmed = p.trim();
-    if (trimmed.startsWith("$")) return trimmed;
-    const num = Number(trimmed);
-    return Number.isFinite(num) ? fmtPrice(num) : trimmed;
+    const t = p.trim();
+    if (t.startsWith("$")) return t;
+    const n = Number(t);
+    return Number.isFinite(n) ? fmtPrice(n) : t;
   }
   return "";
 }
 
-/** Render dietary badges */
 function badges(it: any) {
   const out: Array<{ label: string; class: string }> = [];
-  if (it.glutenFree)
-    out.push({ label: "GF", class: "bg-emerald-50 text-emerald-700 border-emerald-200" });
-  if (it.vegan)
-    out.push({ label: "V", class: "bg-green-50 text-green-700 border-green-200" });
-  if (it.vegetarian)
-    out.push({ label: "VG", class: "bg-amber-50 text-amber-700 border-amber-200" });
+  if (it.glutenFree) out.push({ label: "GF", class: "bg-emerald-50 text-emerald-700 border-emerald-200" });
+  if (it.vegan) out.push({ label: "V", class: "bg-green-50 text-green-700 border-green-200" });
+  if (it.vegetarian) out.push({ label: "VG", class: "bg-amber-50 text-amber-700 border-amber-200" });
   if (it.spicy) {
     const n = typeof it.spicy === "number" ? Math.max(1, Math.min(3, it.spicy)) : 1;
-    out.push({
-      label: "🌶".repeat(n),
-      class: "bg-red-50 text-red-700 border-red-200",
-    });
+    out.push({ label: "🌶".repeat(n), class: "bg-red-50 text-red-700 border-red-200" });
   }
   return out;
 }
 
-/** Detect used badges for legend */
 const uses = categories.reduce(
   (acc, c) => {
     (c.items || []).forEach((it: any) => {
@@ -88,12 +70,34 @@ const uses = categories.reduce(
   },
   { gf: false, v: false, vg: false, spicy: false }
 );
+
+const isPdf = typeof fullMenuUrl === "string" && fullMenuUrl.toLowerCase().endsWith(".pdf");
 ---
 <section id={id} class="bg-surface section-gap">
   <div class="wrap">
     <div class="text-center">
       <h2 class="text-3xl md:text-4xl font-semibold text-gray-900">{title}</h2>
       <p class="mt-2 text-gray-600">Quick picks, perfect for takeout.</p>
+
+      {fullMenuUrl ? (
+        <div class="mt-5">
+          <!-- TOP CTA (outline) -->
+          <a
+            href={fullMenuUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-outline inline-flex items-center gap-2"
+          >
+            {isPdf ? (
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16l4-4h10a2 2 0 0 0 2-2V6a4 4 0 0 0-4-4z" stroke-width="1.5"/>
+                <path d="M12 8h4M8 12h8M8 16h5" stroke-width="1.5"/>
+              </svg>
+            ) : null}
+            <span>{fullMenuLabel}</span>
+          </a>
+        </div>
+      ) : null}
     </div>
 
     <div class={`mt-10 grid gap-6 ${gridCols}`}>
@@ -101,10 +105,18 @@ const uses = categories.reduce(
         <article class="rounded-xl border border-[var(--color-mid)]/60 bg-white shadow-[0_6px_18px_rgba(0,0,0,0.06)] overflow-hidden">
           {cat.photo ? (
             <div class="h-44 md:h-48">
-              <img src={cat.photo} alt={`${cat.title} photo`} class="w-full h-full object-cover" loading="lazy" />
+              <Image
+                src={cat.photo}
+                alt={`${cat.title} photo`}
+                class="w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
+                widths={[640, 860, 1200]}
+                sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+              />
             </div>
           ) : (
-            <div class="h-20 bg-[var(--color-alt)]" />
+            <div class="h-44 md:h-48 bg-[var(--color-alt)]" />
           )}
 
           <div class="p-6">
@@ -118,13 +130,9 @@ const uses = categories.reduce(
                       <div class="flex-1 min-w-0">
                         <div class="flex items-baseline justify-between gap-4">
                           <span class="font-semibold text-gray-900 truncate">{it.name}</span>
-                          {it.price ? (
-                            <span class="shrink-0 text-gray-900 font-semibold">{fmtPrice(it.price)}</span>
-                          ) : null}
+                          {it.price ? <span class="shrink-0 text-gray-900 font-semibold">{fmtPrice(it.price)}</span> : null}
                         </div>
-                        {it.description ? (
-                          <p class="mt-1 text-sm text-gray-600">{it.description}</p>
-                        ) : null}
+                        {it.description ? <p class="mt-1 text-sm text-gray-600">{it.description}</p> : null}
                         {badges(it).length ? (
                           <div class="mt-2 flex flex-wrap gap-2">
                             {badges(it).map((b) => (
@@ -149,31 +157,53 @@ const uses = categories.reduce(
 
     {showLegend && (uses.gf || uses.v || uses.vg || uses.spicy) ? (
       <div class="mt-8 text-xs text-gray-600 flex flex-wrap items-center gap-3 justify-center">
-        {uses.gf ? (
-          <span class="inline-flex items-center gap-1">
-            <span class="rounded-full border border-emerald-200 bg-emerald-50 text-emerald-700 px-1.5 py-[1px] font-semibold">GF</span>
-            Gluten-Free
-          </span>
-        ) : null}
-        {uses.v ? (
-          <span class="inline-flex items-center gap-1">
-            <span class="rounded-full border border-green-200 bg-green-50 text-green-700 px-1.5 py-[1px] font-semibold">V</span>
-            Vegan
-          </span>
-        ) : null}
-        {uses.vg ? (
-          <span class="inline-flex items-center gap-1">
-            <span class="rounded-full border border-amber-200 bg-amber-50 text-amber-700 px-1.5 py-[1px] font-semibold">VG</span>
-            Vegetarian
-          </span>
-        ) : null}
-        {uses.spicy ? (
-          <span class="inline-flex items-center gap-1">
-            <span class="rounded-full border border-red-200 bg-red-50 text-red-700 px-1.5 py-[1px] font-semibold">🌶</span>
-            Spicy
-          </span>
-        ) : null}
+        {uses.gf ? <span class="inline-flex items-center gap-1"><span class="rounded-full border border-emerald-200 bg-emerald-50 text-emerald-700 px-1.5 py-[1px] font-semibold">GF</span> Gluten-Free</span> : null}
+        {uses.v ?  <span class="inline-flex items-center gap-1"><span class="rounded-full border border-green-200 bg-green-50 text-green-700 px-1.5 py-[1px] font-semibold">V</span> Vegan</span> : null}
+        {uses.vg ? <span class="inline-flex items-center gap-1"><span class="rounded-full border border-amber-200 bg-amber-50 text-amber-700 px-1.5 py-[1px] font-semibold">VG</span> Vegetarian</span> : null}
+        {uses.spicy ? <span class="inline-flex items-center gap-1"><span class="rounded-full border border-red-200 bg-red-50 text-red-700 px-1.5 py-[1px] font-semibold">🌶</span> Spicy</span> : null}
       </div>
     ) : null}
+
+<div class="text-center">
+      {fullMenuUrl ? (
+        <div class="mt-5">
+          <!-- TOP CTA (outline) -->
+          <a
+            href={fullMenuUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-outline btn-accent inline-flex items-center gap-2"
+            
+          >
+            {isPdf ? (
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16l4-4h10a2 2 0 0 0 2-2V6a4 4 0 0 0-4-4z" stroke-width="1.5"/>
+                <path d="M12 8h4M8 12h8M8 16h5" stroke-width="1.5"/>
+              </svg>
+            ) : null}
+            <span>{fullMenuLabel}</span>
+          </a>
+        </div>
+      ) : null}
+      </div>
+    <!-- {fullMenuUrl ? (
+      <div class="mt-8 text-center">
+        
+        <a
+          href={fullMenuUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-primary inline-flex items-center gap-2"
+        >
+          {isPdf ? (
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16l4-4h10a2 2 0 0 0 2-2V6a4 4 0 0 0-4-4z" stroke-width="1.5"/>
+              <path d="M12 8h4M8 12h8M8 16h5" stroke-width="1.5"/>
+            </svg>
+          ) : null}
+          <span>{fullMenuLabel}</span>
+        </a>
+      </div>
+    ) : null} -->
   </div>
 </section>

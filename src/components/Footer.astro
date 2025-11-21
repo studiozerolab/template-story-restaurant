@@ -1,15 +1,102 @@
 ---
-import { business } from "../config/site";
+import { business, linkToSZ } from "../config/site";
 const year = new Date().getFullYear();
+const tel = business.phone ? business.phone.replace(/[^0-9]/g, "") : "";
 ---
-<footer class="bg-surface border-t border-[var(--color-mid)]">
-  <div class="wrap py-10 text-center text-sm text-gray-600">
-    <p>© {year} {business.name}. All rights reserved.</p>
-    <p class="mt-2">
-      Made by
-      <a href="https://studiozerolab.com" target="_blank" rel="noopener" class="font-medium text-[var(--color-primary)] hover:underline">
-        STUDIØ
-      </a>
-    </p>
+
+<footer class="bg-[var(--color-alt)] border-t border-[var(--color-mid)]">
+  <!-- Contact / Social row -->
+  <div class="wrap py-8 sm:py-10">
+    <div
+      class="text-sm text-gray-600 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+    >
+      <!-- Address + Phone -->
+      <address class="not-italic text-center md:text-left space-y-1">
+        {
+          business.address && (
+            <p class="m-0 text-gray-700" itemProp="address">
+              {business.address}
+            </p>
+          )
+        }
+
+        {
+          business.phone && (
+            <p class="m-0">
+              <a
+                href={`tel:${tel}`}
+                aria-label={`Call ${business.name} at ${business.phone}`}
+                class="text-[var(--color-primary)] font-semibold underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-alt)] rounded"
+                itemprop="telephone"
+              >
+                {business.phone}
+              </a>
+            </p>
+          )
+        }
+
+        {/* Optional email if you add it to site config */}
+        {
+          business.email && (
+            <p class="m-0">
+              <a
+                href={`mailto:${business.email}`}
+                class="text-gray-700 hover:text-[var(--color-primary)] underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-alt)] rounded"
+                itemProp="email"
+              >
+                {business.email}
+              </a>
+            </p>
+          )
+        }
+      </address>
+
+      <!-- Social Icons -->
+      <div
+        class="flex justify-center md:justify-end gap-3 text-[var(--color-primary)]"
+      >
+        {
+          business.socials.map((l) => (
+            <a
+              href={l.url}
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              class="btn-social inline-flex w-8 h-8 items-center justify-center rounded-full bg-white/90 border border-black/10 shadow-[0_6px_18px_rgba(0,0,0,.06)]
+                     hover:bg-[var(--color-primary)] hover:text-white
+                     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-alt)]"
+              aria-label={l.label}
+            >
+              {l.svg ? (
+                <span
+                  class="inline-block leading-none"
+                  set:html={l.svg}
+                /> /* l.svg must be a full <svg ...>...</svg> string using fill='currentColor' */
+              ) : l.label ? (
+                /* Fallback label */
+                <span>{l.label}</span>
+              ) : null}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Credit line (subfooter) -->
+  <div class="border-t border-[var(--color-mid)]/60">
+    <div class="wrap text-center text-sm py-4 text-gray-500">
+      <span>© {year} {business.name}. All rights reserved.</span><br />
+      <span>
+        Made by
+        <a
+          href={linkToSZ}
+          target="_blank"
+          rel="noopener"
+          class="font-medium text-gray-400 hover:text-[var(--color-primary)] transition-colors"
+        >
+          STUDIØ
+        </a>
+      </span>
+    </div>
   </div>
 </footer>

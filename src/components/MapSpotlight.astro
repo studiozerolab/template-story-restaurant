@@ -4,12 +4,10 @@
  * - id?: string
  * - heading: string
  * - copy: string
- * - image?: string
  * - reverse?: boolean  (alternates left/right)
  * - bg?: "surface" | "alt"
  */
-const { id, heading, name, hours = [], address, phone, copy, image, reverse = false, bg = "surface" } = Astro.props;
-import { Image } from "astro:assets";
+const { id, heading, name, hours = [], address, phone, copy, reverse = false, bg = "surface" } = Astro.props;
 
 const bgClass = bg === "alt" ? "bg-alt" : "bg-surface";
 const reverseCls = reverse ? "md:[&>div:first-child]:order-2" : "";
@@ -25,7 +23,6 @@ const tel = phone ? phone.replace(/[^0-9]/g, "") : "";
           {hours.map((h) => (
             <li><strong>{h.days}</strong> {h.open} - {h.close}</li>
           ))}
-
         </ul>
       ) : null}
 
@@ -36,7 +33,7 @@ const tel = phone ? phone.replace(/[^0-9]/g, "") : "";
             <a
               href={`tel:${tel}`}
               aria-label={`Call ${name} at ${phone}`}
-              class="text-[var(--color-primary)] font-semibold hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-alt)] rounded"
+              class="text-[var(--color-primary)] font-semibold underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-alt)] rounded"
               itemprop="telephone"
             >
               <strong>{phone}</strong>
@@ -45,23 +42,18 @@ const tel = phone ? phone.replace(/[^0-9]/g, "") : "";
       )}
       
       <p class="mt-4 text-gray-600 leading-relaxed">{copy}</p>
-
     </div>
-
-    {image ? (
-      <div class="h-[28rem]">
-        <Image
-          src={image}
-          alt={`${heading} photo`}
-          class="w-full h-full object-cover rounded-xl"
-          loading="lazy"
-          decoding="async"
-          widths={[640, 900, 1200]}
-          sizes="(min-width: 1024px) 50vw, 100vw"
-        />
-      </div>
-    ) : (
-      <div class="h-[20rem] bg-alt rounded-xl"></div>
-    )}
+    
+    <div class="rounded-2xl overflow-hidden shadow-sm">
+        <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3021.927386321533!2d-73.42533988459438!3d40.86815317931466!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89e82809a76d60b3%3A0xXXXXXXXXXXXXXX!2sHarbor%20Pizzeria!5e0!3m2!1sen!2sus!4v0000000000000"
+            width="100%"
+            height="300"
+            style="border:0;"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+    </div>
   </div>
 </section>

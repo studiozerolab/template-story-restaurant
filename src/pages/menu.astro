@@ -1,0 +1,95 @@
+---
+import { Image } from "astro:assets";
+import BaseLayout from "../components/BaseLayout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { assets, business, toggles } from "../config/site";
+
+// Fallbacks
+const imgs = Array.isArray(assets.menuImages) ? assets.menuImages : [];
+const pdf = assets.menuPdfHref;
+---
+<BaseLayout title={`${business.name} • Full Menu`} description={`${business.name} full menu`}>
+  <Fragment slot="header"><Header /></Fragment>
+
+  <section class="bg-surface section-gap">
+    <div class="wrap">
+      <div class="text-center">
+        <h1 class="text-4xl font-bold text-gray-900">Full Menu</h1>
+        <p class="mt-2 text-gray-600">Swipe or tap to zoom. Updated regularly.</p>
+
+        <div class="mt-4 flex flex-wrap justify-center gap-3">
+          {pdf && (
+            <a
+              href={pdf}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn-outline inline-flex items-center gap-2"
+            >
+              <!-- small pdf icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16l4-4h10a2 2 0 0 0 2-2V6a4 4 0 0 0-4-4z" stroke-width="1.5"/>
+                <path d="M12 8h4M8 12h8M8 16h5" stroke-width="1.5"/>
+              </svg>
+              <span>Open PDF</span>
+            </a>
+          )}
+
+          {toggles?.showOrderingStrip && (
+            <a href="/#ordering" class="btn-soft">Order Online</a>
+          )}
+        </div>
+      </div>
+
+      <!-- Menu images -->
+      <div class="mt-8 grid gap-6">
+        {imgs.length
+          ? imgs.map((src, i) => {
+              const href = typeof src === "string" ? src : src.src;
+              return (
+                <a href={href} class="block gallery-img" data-lightbox-index={i} aria-label={`Open full-size menu page ${i+1}`}>
+                  <Image
+                    src={src}
+                    alt={`Menu page ${i+1}`}
+                    class="w-full h-auto rounded-xl border border-[var(--color-mid)]/60"
+                    loading="lazy"
+                    decoding="async"
+                    widths={[720, 960, 1280, 1600]}
+                    sizes="(min-width: 1024px) 75vw, 100vw"
+                  />
+                </a>
+              );
+            })
+          : (
+            <div class="rounded-xl border border-[var(--color-mid)]/60 bg-alt p-10 text-center text-gray-600">
+              Menu image coming soon.
+            </div>
+          )
+        }
+      </div>
+
+      <!-- Bottom CTA row -->
+      <div class="mt-10 flex flex-wrap justify-center gap-3">
+        {pdf && (
+          <a
+            href={pdf}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-outline"
+          >Open PDF</a>
+        )}
+        {toggles?.showOrderingStrip && (
+            <a href="/#ordering" class="btn-outline btn-accent">Order Online</a>
+          )}
+      </div>
+    </div>
+  </section>
+
+  <Fragment slot="footer"><Footer /></Fragment>
+
+  <script type="module">
+    import { initLightbox } from "../lib/lightbox.js";
+    // Reuse the same lightbox behavior as the gallery
+    initLightbox();
+  </script>
+</BaseLayout>

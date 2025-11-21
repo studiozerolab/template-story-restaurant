@@ -2,33 +2,41 @@
 import BaseLayout from "../components/BaseLayout.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
-
 import Hero from "../components/Hero.astro";
 import OrderingStrip from "../components/OrderingStrip.astro";
 import Spotlight from "../components/Spotlight.astro";
-import HighlightsGrid from "../components/HighlightsGrid.astro";
+import MapSpotlight from "../components/MapSpotlight.astro";
+//import HighlightsGrid from "../components/HighlightsGrid.astro";
 import MenuItemsGrid from "../components/MenuItemsGrid.astro";
-import GalleryGrid from "../components/GalleryGrid.astro";
+//import GalleryGrid from "../components/GalleryGrid.astro";
 //import ContactForm from "../components/ContactForm.astro";
 
-import { toggles, business, highlights, assets, menu } from "../config/site";
+import { toggles, business, assets, menu } from "../config/site";
 ---
-<BaseLayout title={`${business.name} • Pizzeria`} description="Hand-tossed pies, fresh daily.">
+
+<BaseLayout
+  title={`${business.name} • Pizzeria`}
+  description="Hand-tossed pies, fresh daily."
+>
   <Fragment slot="header"><Header /></Fragment>
 
   <!-- 1. Hero (full height) -->
   <Hero />
 
   <!-- 2. Ordering Strip (early placement, slim) -->
-  {toggles.showOrderingStrip && <OrderingStrip links={business.orderingLinks} phone={business.phone} />}
+  {
+    toggles.showOrderingStrip && (
+      <OrderingStrip links={business.orderingLinks} phone={business.phone} />
+    )
+  }
 
   <!-- 3. Our Story (Spotlight, image right) -->
   <Spotlight
     id="story"
     heading="From our oven to your table"
     copy={`We started with a simple idea: make pizza we'd be proud to serve our friends.
-Our dough rests for 48 hours, our sauce is cooked low and slow, and every pie is finished
-with a drizzle of olive oil. Whether you love a classic margherita or something new,
+Our dough rests for 48 hours, our sauce is slow-simmered, and every pie is finished
+with a drizzle of olive oil. Whether you love a classic Margherita or something new,
 it's always handmade — no shortcuts.`}
     image={assets.gallery?.[0]}
     bg="surface"
@@ -36,36 +44,53 @@ it's always handmade — no shortcuts.`}
 
   <!-- 4. Second Spotlight (alternating, image left) -->
   <Spotlight
-  	id="hours"
+    id="hours"
     heading="Hours & Location"
-	hours={business.hours}
-	address={business.address}
-	phone={business.phone}
+	name={business.name}
+    hours={business.hours}
+    address={business.address}
+    phone={business.phone}
     image={assets.gallery?.[1]}
     reverse={true}
     bg="alt"
   />
 
-  <!-- 5. Highlights Grid (optional) -->
-  <section class="bg-alt section-gap">
+  <!-- <MapSpotlight
+    id="hours"
+    heading="Hours & Location"
+	name={business.name}
+    hours={business.hours}
+    address={business.address}
+    phone={business.phone}
+    image={assets.gallery?.[1]}
+    reverse={true}
+    bg="alt"
+  /> -->
+
+  <!-- 5. Highlights Grid 2 versions (optional) -->
+  <!-- <section class="bg-alt section-gap">
     <div class="wrap">
       <h2 class="sr-only">What Makes Us Different</h2>
       <HighlightsGrid highlights={highlights} />
     </div>
-  </section>
+  </section> -->
 
-  <MenuItemsGrid title="Menu Highlights" categories={menu.categories} id="menu" />
+  <MenuItemsGrid
+    title="Menu Highlights"
+    categories={menu.categories}
+    id="menu"
+  />
 
   <!-- 6. Gallery -->
-  {toggles.showGallery && <GalleryGrid images={assets.gallery} />}
+  <!-- {toggles.showGallery && <GalleryGrid images={assets.gallery} />} -->
 
   <!-- 7. Contact -->
   <!-- <ContactForm /> -->
 
   <Fragment slot="footer"><Footer /></Fragment>
 
-  <script type="module">
+  <!-- <script type="module">
     import { initLightbox } from "../lib/lightbox.js";
     initLightbox();
-  </script>
+  </script> -->
 </BaseLayout>
